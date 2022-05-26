@@ -61,6 +61,12 @@ class App extends Component {
     };
 
     let persons = null;
+    // Cleaner solution to set condition. 
+    // remember that render method is rerender every state change
+    // if Any state is changed then render method is rerender
+    // persons will not show till then showPersons is become true.
+    // any state can be change but until then showPerson is true UI do not render persons
+    // whenever toggleShowPersons is trigger then showPersons become true and UI render persons
     if (this.state.showPersons) {
       persons = (
         <div>
