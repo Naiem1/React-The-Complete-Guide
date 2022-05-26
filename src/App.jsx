@@ -7,37 +7,69 @@ import './App.css'
 class App extends Component {
   state = {
     persons: [
-      { name: 'Tony Stark', age: 300 },
-      { name: 'Wayne Bruce', age: 400 },
-      { name: 'Steve Rogers', age: 500 },
+      { id: 0, name: 'Tony Stark', age: 300 },
+      { id: 1, name: 'Wayne Bruce', age: 400 },
+      { id: 2, name: 'Steve Rogers', age: 500 },
     ],
     otherState: 'Some other value',
     showPersons: false,
   }
 
-  switchNameHandler = (newName) => {
-    console.log('was Clicked!');
-    // DONT'T DO THIS: this.state.persons[0].name = 'Pitter Parker!';
-    this.setState({
-      persons: [
-        { name: newName, age: 300 },
-        { name: 'Wayne Bruce', age: 400 },
-        { name: 'Steve Rogers', age: 80 },
-      ]
+  
+
+  nameChangedHandler = (event, id) => {
+
+    const personIndex = this.state.persons.findIndex(p => {
+      return p.id === id;
     })
-    console.log(newName);
-    console.log('this>>', this);
+
+    const person = {
+      ...this.state.persons[personIndex]
+    }
+    // const person = Object.assign({}, this.state.persons[personIndex]); //!Alternative approach to copy object
+
+    person.name = event.target.value;
+
+    const persons = [...this.state.persons];
+    persons[personIndex] = person;
+    this.setState({ persons: persons });
+
+    
   }
 
-  nameChangedHandler = (event) => {
-    console.log('changed', event.target.name)
-    this.setState({
-      persons: [
-        { name: 'Pitter parker', age: 300 },
-        { name: event.target.value, age: 400 },
-        { name: 'Steve Rogers', age: 80 },
-      ]
-    });
+  deletePersonHandler = (personIndex) => {
+    // const persons = this.state.persons.splice(personIndex, 1); //!WRONG
+    // this.setState({ persons: persons }); // !WRONG
+    
+    // we assign reference the of the memory address into persons, so if we touch person it will change all position
+    /**
+     * ! work but not right way
+      const persons = this.state.persons; 
+      persons.splice(personIndex, 1);
+      this.setState({ persons: persons });
+     * /
+    
+    /**
+     * Above approach that is not right way to update state or delete anything
+     * We know that javascript object and array are reference type
+     * so when we get persons from state as I done here i get actually get a pointer to the original persons's object managed by react to original state i should say
+     * if I splice it here, I already mutate(change)  this original data . although it does work without any throwing an error
+     * but it is not good practice, it show unpredictable app data and it is bad practice
+     * !A good practice is to create a copy of persons array before manipulating it
+     * ! Simple way of doing this person.slice() = slice method without argument simply copy the full array and returns a new one which is then store into variable
+     * ! Now we can safely edit this new one and then update react state with your new array
+     ** alternative -> person = [...persons]; using spread operator
+     * ! Now we have array, a new array with the objects from the old array but the old array itself
+     * !Note: We should always update state in an immutable fashion, without mutating the original state first
+     * ! Note: Crate a copy, change that or manipulate that then update the state with setState()
+     */
+    // !Right Way
+    const persons = [...this.state.persons]; 
+    persons.splice(personIndex, 1);
+    this.setState({ persons: persons });
+
+    // this.state.persons.splice(personIndex, 1); // !Ok
+    // this.setState({ persons: this.state.persons }); // !Ok
   }
 
   togglePersonHandler = () => {
@@ -48,9 +80,14 @@ class App extends Component {
 
 
 
+
+
   render() {
     console.log('state>>', this.state);
-    console.log('ShowPerson>>', this.state.showPersons);
+    console.log('ShowPerson>>', this.state.persons);
+
+    
+    console.log('persons>>', this.state.persons);
 
     const style = {
       backgroundColor: 'white',
@@ -70,24 +107,17 @@ class App extends Component {
     if (this.state.showPersons) {
       persons = (
         <div>
-          <Person
-            name={this.state.persons[0].name}
-            age={this.state.persons[0].age}
-          />
-          <Person
-            name={this.state.persons[1].name}
-            age={this.state.persons[1].age}
-            click={this.switchNameHandler.bind(this, 'Harry Potter')}
-            changed={this.nameChangedHandler}
-          >
-            My Hobbies: Racing
-          </Person>
-          <Person
-            name={this.state.persons[2].name}
-            age={this.state.persons[2].age}
-          />
+          {this.state.persons.map((person, index) => {
+            return <Person
+              name={person.name}
+              age={person.age}
+              click={() => this.deletePersonHandler(index)}
+              key={person.id}
+              changed={(event) => this.nameChangedHandler(event, person.id)}
+            />
+          })}
         </div>
-      )
+      );
     }
 
     return (
