@@ -1,7 +1,10 @@
 import { Component } from 'react';
-import Person from './Person/Person'
-import './App.css'
+import Person from './Person/Person';
+import Radium from 'radium';
+// import './App.css'
+import classes from './App.module.css';
 
+console.log(Radium)
 // mutate -> change
 
 class App extends Component {
@@ -79,9 +82,6 @@ class App extends Component {
   }
 
 
-
-
-
   render() {
     console.log('state>>', this.state);
     console.log('ShowPerson>>', this.state.persons);
@@ -89,14 +89,22 @@ class App extends Component {
     
     console.log('persons>>', this.state.persons);
 
-    const style = {
-      backgroundColor: 'white',
-      font: 'inherit',
-      border: '1px solid blue',
-      padding: '8px',
-      cursor: 'pointer'
-    };
+    // const style = {
+    //   backgroundColor: 'green',
+    //   color: 'white',
+    //   font: 'inherit',
+    //   border: '1px solid blue',
+    //   padding: '8px',
+    //   cursor: 'pointer',
+    //   // ':hover': {
+    //   //   backgroundColor: 'lightgreen',
+    //   //   color: 'black'
+    //   // }
+    // };
 
+    // const btnClass = [classes.Button]
+    
+    let btnClass = '';
     let persons = null;
     // Cleaner solution to set condition. 
     // remember that render method is rerender every state change
@@ -118,14 +126,32 @@ class App extends Component {
           })}
         </div>
       );
+
+      // style.backgroundColor = 'red';
+      // style[':hover'] = {
+      //   backgroundColor: 'lightred',
+      //   color: 'black'
+      // }
+
+      // btnClass.push(classes.Red)
+      btnClass = classes.Red;
     }
 
+    const assignedClasses = [];
+    if (this.state.persons.length <= 2) {
+      assignedClasses.push(classes.red); // classes = ['red']
+    }
+    if (this.state.persons.length <= 1) {
+      assignedClasses.push(classes.bold); // classes = ['red', 'bold']
+    }
+
+
     return (
-      <div className="App">
+      <div className={classes.App}>
         <h1>Hi, I am React App</h1>
-        <p>This is really working...</p>
+        <p className={assignedClasses.join(' ')}>This is really working...</p>
         <button
-          style={style}
+          className={btnClass}
           onClick={this.togglePersonHandler}
         >Switch Name</button>
         { persons }
@@ -134,4 +160,4 @@ class App extends Component {
   }
 }
 
-export default App
+export default App;

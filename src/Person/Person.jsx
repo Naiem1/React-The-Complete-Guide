@@ -1,10 +1,12 @@
-import './Person.css';
+// import Radium from 'radium';
+import classes from './Person.module.css';
 
 const Person = (props) => {
   console.log(props)
+  
   return (
-    <div className="Person">
-      <p onClick={props.click}>I'm a {props.name} and I'm {props.age} years old! </p>
+    <div className={classes.Person}>
+      <p  onClick={props.click}>I'm a {props.name} and I'm {props.age} years old! </p>
       <p>{props.children}</p>
       <input
         type="text"
