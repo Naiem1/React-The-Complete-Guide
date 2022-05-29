@@ -1,8 +1,9 @@
 import { Component } from 'react';
-import Person from './Person/Person';
 import Radium from 'radium';
 // import './App.css'
+import Persons from '../components/Persons/Persons';
 import classes from './App.module.css';
+import Cockpit from '../components/Cokpit/Cockpit';
 
 console.log(Radium)
 // mutate -> change
@@ -104,7 +105,6 @@ class App extends Component {
 
     // const btnClass = [classes.Button]
     
-    let btnClass = '';
     let persons = null;
     // Cleaner solution to set condition. 
     // remember that render method is rerender every state change
@@ -113,19 +113,12 @@ class App extends Component {
     // any state can be change but until then showPerson is true UI do not render persons
     // whenever toggleShowPersons is trigger then showPersons become true and UI render persons
     if (this.state.showPersons) {
-      persons = (
-        <div>
-          {this.state.persons.map((person, index) => {
-            return <Person
-              name={person.name}
-              age={person.age}
-              click={() => this.deletePersonHandler(index)}
-              key={person.id}
-              changed={(event) => this.nameChangedHandler(event, person.id)}
-            />
-          })}
-        </div>
-      );
+      persons = <Persons
+        persons={this.state.persons}
+        clicked={this.deletePersonHandler}
+        changed={this.nameChangedHandler}
+      />;
+  
 
       // style.backgroundColor = 'red';
       // style[':hover'] = {
@@ -134,26 +127,18 @@ class App extends Component {
       // }
 
       // btnClass.push(classes.Red)
-      btnClass = classes.Red;
     }
 
-    const assignedClasses = [];
-    if (this.state.persons.length <= 2) {
-      assignedClasses.push(classes.red); // classes = ['red']
-    }
-    if (this.state.persons.length <= 1) {
-      assignedClasses.push(classes.bold); // classes = ['red', 'bold']
-    }
+   
 
 
     return (
       <div className={classes.App}>
-        <h1>Hi, I am React App</h1>
-        <p className={assignedClasses.join(' ')}>This is really working...</p>
-        <button
-          className={btnClass}
-          onClick={this.togglePersonHandler}
-        >Switch Name</button>
+        <Cockpit
+          showPersons={this.state.showPersons}
+          persons={this.state.persons}
+          clicked={this.togglePersonHandler}
+      />
         { persons }
       </div>
     )
