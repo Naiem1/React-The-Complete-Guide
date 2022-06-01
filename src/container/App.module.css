@@ -10,7 +10,7 @@
   font-weight: bold;
 }
 
-.App button {
+/* .App button {
   background-color: green;
   color: #FFFFFF;
   font: inherit;
@@ -30,7 +30,7 @@
 
 .App button.Red:hover {
   background-color: salmon;
-}
+} */
 
 
 /* .Button {
